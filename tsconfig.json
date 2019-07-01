@@ -3,10 +3,10 @@
     "emitDecoratorMetadata"         : true,
     "esModuleInterop"               : true,
     "experimentalDecorators"        : true,
+    "jsx"                           : "react",
+    "jsxFactory"                    : "h",
     "inlineSourceMap"               : false,
     "inlineSources"                 : true,
-    "jsx"                           : "react",
-    "jsxFactory"                    : "React.createElement",
     "lib"                           : ["esnext", "dom", "dom.iterable"],
     "module"                        : "esnext",
     "moduleResolution"              : "node",
@@ -21,6 +21,7 @@
   "include"        : [
     "declarations/**/*.d.ts",
     "src/**/*.tsx",
+    "src/**/*.d.ts",
     "src/**/*.ts"
   ],
   "exclude"        : [

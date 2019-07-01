@@ -1,6 +1,6 @@
-import { parallel, task } from 'gulp'
+import { parallel, task } from 'gulp';
 
-import './backend'
-import './dev-server'
+import './backend';
+import './dev-server';
 
-task('integration', parallel('devServer', 'backend'))
+task('integration', parallel('devServer', 'backend'));

@@ -1,23 +1,21 @@
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
-import * as fs                    from 'fs-extra'
-import HtmlWebpackPlugin          from 'html-webpack-plugin'
-import MiniCssExtractPlugin       from 'mini-css-extract-plugin'
-import * as path                  from 'path'
-import stripJsonComments          from 'strip-json-comments'
-import * as webpack               from 'webpack'
-import { BundleAnalyzerPlugin }   from 'webpack-bundle-analyzer'
-import config                     from '../config'
-import excludeFor                 from './configs/exclude'
-import lodashPlugin               from './configs/lodash'
-import { sassLoader, scssLoader } from './configs/sass'
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import * as fs                    from 'fs-extra';
+import HtmlWebpackPlugin          from 'html-webpack-plugin';
+import MiniCssExtractPlugin       from 'mini-css-extract-plugin';
+import * as path                  from 'path';
+import * as webpack               from 'webpack';
+import { BundleAnalyzerPlugin }   from 'webpack-bundle-analyzer';
+import config                     from '../config';
+import lodashPlugin               from './configs/lodash';
+import { sassLoader, scssLoader } from './configs/sass';
 
-const SIZE_14KB = 14336
+const SIZE_14KB = 14336;
 
 // See https://github.com/vuejs/vue-loader/issues/678#issuecomment-370965224
-const babelrc = JSON.parse(stripJsonComments(fs.readFileSync(path.join(__dirname, '../../.babelrc'), 'utf-8')))
+const babelrc = fs.readJsonSync(path.join(__dirname, '../../.babelrc'));
 
 
-const prodConf: webpack.Configuration = {
+const prodConfig: webpack.Configuration = {
 
   mode: 'production',
 
@@ -30,15 +28,19 @@ const prodConf: webpack.Configuration = {
   },
 
   resolve: {
-    extensions : ['.tsx', '.ts', '.jsx', '.mjs', '.js', '.json'],
+    extensions: ['.tsx', '.ts', '.jsx', '.es6', '.js', '.json'],
     mainFields: ['webpack', 'jsnext:main', 'module', 'browser', 'web', 'browserify', 'main'],
+    alias     : {
+      'react'    : 'preact/compat',
+      'react-dom': 'preact/compat',
+    },
   },
 
   output: {
-    path         : config.absOutput(''),
+    path         : config.absOutput(),
     publicPath   : '',
-    filename     : 'assets/[name]-[chunkHash].js',
-    chunkFilename: 'assets/[name]-[chunkHash].chunk.js',
+    filename     : 'assets/[name]-[hash].js',
+    chunkFilename: 'assets/chunks/[name]-[chunkHash].chunk.js',
     globalObject : 'self',
   },
 
@@ -50,9 +52,8 @@ const prodConf: webpack.Configuration = {
         use    : ['html-loader?interpolate'],
       },
       {
-        test   : /\.tsx?$/,
-        exclude: excludeFor('ts'),
-        use    : [
+        test: /\.tsx?$/,
+        use : [
           {
             loader : 'babel-loader',
             options: babelrc,
@@ -67,14 +68,27 @@ const prodConf: webpack.Configuration = {
         ],
       },
       {
-        test   : /\.jsx?$/,
-        include: [
-          config.absSource(),
-        ],
-        use    : [
+        test : /\.jsx?$/,
+        oneOf: [
           {
-            loader : 'babel-loader',
-            options: babelrc,
+            test: /\/esm\/.*\.js$/,
+            use : [
+              {
+                loader : 'babel-loader',
+                options: babelrc,
+              },
+            ],
+          },
+          {
+            include: [
+              config.absSource(),
+            ],
+            use    : [
+              {
+                loader : 'babel-loader',
+                options: babelrc,
+              },
+            ],
           },
         ],
       },
@@ -85,6 +99,7 @@ const prodConf: webpack.Configuration = {
           {
             loader : 'css-loader',
             options: {
+              modules      : 'global',
               importLoaders: 1,
             },
           },
@@ -98,6 +113,7 @@ const prodConf: webpack.Configuration = {
           {
             loader : 'css-loader',
             options: {
+              modules      : 'global',
               importLoaders: 3,
             },
           },
@@ -113,6 +129,7 @@ const prodConf: webpack.Configuration = {
           {
             loader : 'css-loader',
             options: {
+              modules      : 'global',
               importLoaders: 3,
             },
           },
@@ -122,8 +139,9 @@ const prodConf: webpack.Configuration = {
         ],
       },
       {
-        test: /\.(png|jpe?g|gif|svg|woff2?|ttf|eot|ico)(\?\S*)?$/,
-        use : [
+        test   : /\.(png|jpe?g|gif|svg|woff2?|ttf|eot|ico)(\?\S*)?$/,
+        exclude: /weixin/,
+        use    : [
           {
             loader : 'url-loader',
             options: {
@@ -137,7 +155,25 @@ const prodConf: webpack.Configuration = {
           },
         ],
       },
+      {
+        test: /weixin.*\.(png|jpe?g|gif|svg|woff2?|ttf|eot|ico)(\?\S*)?$/,
+        use : [
+          {
+            loader : 'file-loader',
+            options: {
+              name      : 'weixin-[hash].[ext]',
+              outputPath: 'assets',
+              publicPath: './assets/',
+            },
+          },
+        ],
+      },
     ],
+  },
+
+  stats: {
+    // See: https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
+    warningsFilter: /export .* was not found in/,
   },
 
   node: {
@@ -145,15 +181,12 @@ const prodConf: webpack.Configuration = {
     __filename: true,
   },
 
+
   plugins: [
+    // Refer to: https://github.com/lodash/lodash-webpack-plugin
     lodashPlugin,
     new ForkTsCheckerWebpackPlugin({
       tsconfig: config.absRoot('tsconfig.json'),
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        ROUTER_BASE: config.base,
-      },
     }),
     new BundleAnalyzerPlugin({
       analyzerMode  : 'static',
@@ -162,8 +195,8 @@ const prodConf: webpack.Configuration = {
       reportFilename: config.absRoot('test_results/bundle-analysis-report.html'),
     }),
     new MiniCssExtractPlugin({
-      filename     : 'assets/[name]-[chunkHash].css',
-      chunkFilename: 'assets/[name]-[chunkHash].chunk.css',
+      filename     : 'assets/[name]-[hash].css',
+      chunkFilename: 'assets/[name]-[hash]-[id].chunk.css',
     }),
     new HtmlWebpackPlugin({
       filename      : 'index.html',
@@ -174,6 +207,6 @@ const prodConf: webpack.Configuration = {
       chunksSortMode: 'auto',
     }),
   ],
-}
+};
 
-export default prodConf
+export default prodConfig;
