@@ -114,7 +114,6 @@
       <option name="HTML_NEWLINE_AFTER_LAST_ATTRIBUTE" value="When multiline" />
     </HTMLCodeStyleSettings>
     <JSCodeStyleSettings version="0">
-      <option name="USE_SEMICOLON_AFTER_STATEMENT" value="false" />
       <option name="FORCE_SEMICOLON_STYLE" value="true" />
       <option name="ALIGN_OBJECT_PROPERTIES" value="2" />
       <option name="ALIGN_VAR_STATEMENTS" value="2" />
@@ -332,14 +331,15 @@
       <option name="CORTEGE_COMMA_1ST" value="true" />
       <option name="CORTEGE_CLOSING" value="1" />
     </SybaseCodeStyleSettings>
-    <TypeScriptCodeStyleSettings version="1">
+    <TypeScriptCodeStyleSettings version="0">
       <option name="FORCE_SEMICOLON_STYLE" value="true" />
       <option name="ALIGN_OBJECT_PROPERTIES" value="2" />
-      <option name="ALIGN_VAR_STATEMENTS" value="2" />
+      <option name="ALIGN_VAR_STATEMENTS" value="1" />
       <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
       <option name="USE_DOUBLE_QUOTES" value="false" />
       <option name="FORCE_QUOTE_STYlE" value="true" />
       <option name="ENFORCE_TRAILING_COMMA" value="WhenMultiline" />
+      <option name="IMPORTS_WRAP" value="0" />
       <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
       <option name="SPACES_WITHIN_IMPORTS" value="true" />
       <option name="ALIGN_IMPORTS" value="true" />
@@ -693,6 +693,10 @@
           </section>
         </rules>
       </arrangement>
+    </codeStyleSettings>
+    <codeStyleSettings language="ruby">
+      <option name="ALIGN_GROUP_FIELD_DECLARATIONS" value="true" />
+      <option name="SPACE_WITHIN_BRACES" value="true" />
     </codeStyleSettings>
   </code_scheme>
 </component>

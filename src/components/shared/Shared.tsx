@@ -1,11 +1,12 @@
-import { FunctionComponent, h } from 'preact';
-import * as css                 from './Shared.scss';
+import * as React   from 'react';
+import { FC, memo } from 'react';
+import * as css     from './Shared.scss';
 
 interface Props {
   name: string;
 }
 
-export const Shared: FunctionComponent<Props> = props =>
+export const Shared: FC<Props> = props =>
   <div className={`shared ${css.shared}`}>
     <h1 className="h1">[Component] Shared</h1>
 
@@ -13,4 +14,4 @@ export const Shared: FunctionComponent<Props> = props =>
   </div>
 ;
 
-export default Shared;
+export default memo(Shared);

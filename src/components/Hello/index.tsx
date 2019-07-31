@@ -1,7 +1,9 @@
-import { FunctionComponent, h } from 'preact';
-import { lazy }                 from 'preact/compat';
-import { Route }                from 'react-router-dom';
-import * as css                 from './index.scss';
+import { useLocalStore, useObserver } from 'mobx-react-lite';
+import * as React                     from 'react';
+import { FC, lazy, memo, useMemo }    from 'react';
+import { Route }                      from 'react-router-dom';
+import receptionistModel              from '../../models/receptionist';
+import * as css                       from './index.scss';
 
 
 const Shared = lazy(() => import(/*webpackChunkName:"|c|s|Shared"*/'../shared/Shared'));
@@ -11,22 +13,26 @@ const Nested = lazy(() => import(/*webpackChunkName:"|c|Nested"*/'./Nested'));
 interface Props {}
 
 
-const Hello: FunctionComponent<Props> = () => {
+const Hello: FC<Props> = props => {
+
+  const receptionists = useLocalStore(() => receptionistModel);
+
+  useMemo(receptionists.fetch, []);
 
   // init();
-  return (
+  return useObserver(() => (
     <div className={`hello ${css.hello}`}>
       <h1 className="h1">[component] HelloPage</h1>
 
       <h3 className="h3">Hello!!!</h3>
 
-      {/*<p>{this.props.greeting}</p>*/}
+      <p>{receptionists.greeting}</p>
 
       <p>
         <button
           type="button"
           className="btn btn-danger"
-          // onClick={this.props.change}
+          onClick={receptionists.fetch}
         >Another receptionist!
         </button>
       </p>
@@ -48,7 +54,7 @@ const Hello: FunctionComponent<Props> = () => {
         <div className={`image ${css.image}`}/>
       </section>
     </div>
-  );
+  ), 'Hello');
 };
 
-export default Hello;
+export default memo(Hello);

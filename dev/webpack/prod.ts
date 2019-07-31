@@ -6,7 +6,6 @@ import * as path                  from 'path';
 import * as webpack               from 'webpack';
 import { BundleAnalyzerPlugin }   from 'webpack-bundle-analyzer';
 import config                     from '../config';
-import lodashPlugin               from './configs/lodash';
 import { sassLoader, scssLoader } from './configs/sass';
 
 const SIZE_14KB = 14336;
@@ -30,10 +29,6 @@ const prodConfig: webpack.Configuration = {
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.es6', '.js', '.json'],
     mainFields: ['webpack', 'jsnext:main', 'module', 'browser', 'web', 'browserify', 'main'],
-    alias     : {
-      'react'    : 'preact/compat',
-      'react-dom': 'preact/compat',
-    },
   },
 
   output: {
@@ -183,8 +178,6 @@ const prodConfig: webpack.Configuration = {
 
 
   plugins: [
-    // Refer to: https://github.com/lodash/lodash-webpack-plugin
-    lodashPlugin,
     new ForkTsCheckerWebpackPlugin({
       tsconfig: config.absRoot('tsconfig.json'),
     }),

@@ -1,5 +1,5 @@
-import { FunctionComponent, h } from 'preact';
-import { lazy }                 from 'preact/compat';
+import * as React               from 'react';
+import { FC, lazy }             from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import './App.scss';
 
@@ -7,7 +7,7 @@ import './App.scss';
 const Hello = lazy(() => import(/*webpackChunkName:"|c|Hello"*/'./Hello'));
 
 
-export const App: FunctionComponent = () =>
+export const App: FC = () =>
   <div id="app" className="container">
     <h1 className="h1">[Component] MyApp</h1>
 

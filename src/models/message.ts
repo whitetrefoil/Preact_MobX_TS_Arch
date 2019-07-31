@@ -1,6 +1,6 @@
 import { action, observable } from 'mobx';
 
-export default class MessageModel {
+export class MessageModel {
   @observable messages: string[] = [];
 
   @action.bound
@@ -13,3 +13,7 @@ export default class MessageModel {
     this.messages.shift();
   }
 }
+
+const messageModel = new MessageModel();
+
+export default messageModel;

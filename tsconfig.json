@@ -4,7 +4,6 @@
     "esModuleInterop"               : true,
     "experimentalDecorators"        : true,
     "jsx"                           : "react",
-    "jsxFactory"                    : "h",
     "inlineSourceMap"               : false,
     "inlineSources"                 : true,
     "lib"                           : ["esnext", "dom", "dom.iterable"],

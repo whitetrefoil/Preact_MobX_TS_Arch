@@ -1,16 +1,21 @@
-import { action, observable } from 'mobx';
-import { getReceptionist }    from '../api/endpoints/receptionist';
+import { action, computed, observable } from 'mobx';
+import { getReceptionist }              from '../api/endpoints/receptionist';
 
 export class ReceptionistModel {
 
   @observable.struct receptionist?: Receptionist;
   @observable initialized = false;
-  @observable loading     = false;
+  @observable loading = false;
   @observable.ref failure?: Error;
+
+  @computed
+  get greeting(): string {
+    return this.receptionist == null ? 'Waiting for a receptionist...' : `${this.receptionist.name}: Hello!`;
+  }
 
   @action
   set(receptionist: Receptionist) {
-    this.initialized  = true;
+    this.initialized = true;
     this.receptionist = receptionist;
   }
 
@@ -29,3 +34,8 @@ export class ReceptionistModel {
     }
   }
 }
+
+
+export const receptionistModel = new ReceptionistModel();
+
+export default receptionistModel;

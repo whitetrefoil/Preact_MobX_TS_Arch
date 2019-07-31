@@ -1,5 +1,10 @@
-import { FunctionComponent, h } from 'preact';
+import * as React           from 'react';
+import { forwardRef, memo } from 'react';
 
-export const A: FunctionComponent = props =>
-  <a href="javascript:" {...props}>{props.children}</a>
-;
+
+const A = forwardRef<HTMLAnchorElement>((props, ref) =>
+  <a ref={ref} href="javascript:" {...props}>{props.children}</a>,
+);
+
+
+export default memo(A);
